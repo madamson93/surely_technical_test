@@ -39,4 +39,4 @@ if ($getTasksResult->num_rows > 0) {
 	echo "0 results found";
 }
 
-$dbLink->close();$dbLink->close();
+$dbLink->close();
