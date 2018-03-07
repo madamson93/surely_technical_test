@@ -16,8 +16,12 @@ include_once('../app/DatabaseConnection.php');
 $dbConnection = new DatabaseConnection();
 $dbLink = $dbConnection->connectToDatabase();
 
+//retrieve value from request body in JSON format
+$inputJSON = file_get_contents('php://input');
+$input = json_decode($inputJSON, TRUE);
+$taskDetailsText = $input['task_details'];
+
 //use INSERT query to create a new task in the database
-$taskDetailsText = $_REQUEST['task_details'];
 $insertNewTaskQuery = "INSERT INTO tasks (task_details) VALUES ('$taskDetailsText')";
 
 if (!empty($taskDetailsText) || $taskDetailsText !== null) {
