@@ -35,8 +35,6 @@ if ($getTasksResult->num_rows > 0) {
 
 	//return the JSON response
 	echo json_encode($tasksArray);
-} else {
-	echo "0 results found";
 }
 
 $dbLink->close();
