@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="../src/todo.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+</head>
+
+<body class="container" ng-app="todoApp">
+    <h1>Todo List App</h1>
+
+    <div ng-controller="FormController">
+        <form class="inline-form" ng-submit="submitTaskForm()">
+            <input type="text" class="form-control mb-2 mr-sm-2" id="taskDetailsInput" placeholder="Enter task here" ng-model="taskdetails">
+            <button class="btn btn-success mb-2">Submit</button>
+        </form>
+    </div>
+
+    <div ng-controller="TodoListController">
+        <h3>To-do Items</h3>
+        <div>
+            <div ng-repeat="task in tasks">
+                <span>{{ task.task_details }}</span>
+                <a href="#" class="badge badge-info">Edit</a>
+                <a href="#" class="badge badge-danger">Delete</a>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
