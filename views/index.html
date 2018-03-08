@@ -20,9 +20,11 @@
         <h3>To-do Items</h3>
         <div>
             <div ng-repeat="task in tasks">
+                <li ng-show="!tasks.length">There are currently no tasks saved</li>
+
                 <span>{{ task.task_details }}</span>
-                <a href="#" class="badge badge-info">Edit</a>
-                <a href="#" class="badge badge-danger">Delete</a>
+                <a href="#" class="badge badge-info" ng-click="editTask(task.id)">Edit</a>
+                <a href="#" class="badge badge-danger" ng-click="deleteTask(task.id)">Delete</a>
             </div>
         </div>
 
