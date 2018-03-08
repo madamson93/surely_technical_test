@@ -16,9 +16,14 @@ include_once('../app/DatabaseConnection.php');
 $dbConnection = new DatabaseConnection();
 $dbLink = $dbConnection->connectToDatabase();
 
+
+//retrieve value from request body in JSON format
+$inputJSON = file_get_contents('php://input');
+$input = json_decode($inputJSON, TRUE);
+$taskToDeleteID = $input['task_id'];
+
 //use DELETE query to delete an existing entry in the database
-$taskToDeleteID = $_REQUEST['task_id'];
-$deleteTaskQuery = "DELETE FROM tasks WHERE id=$taskToDeleteID";
+$deleteTaskQuery = "DELETE FROM tasks WHERE id = $taskToDeleteID";
 
 if ($dbLink->query($deleteTaskQuery) === TRUE) {
 	echo json_encode([
@@ -26,7 +31,7 @@ if ($dbLink->query($deleteTaskQuery) === TRUE) {
 	]);
 } else {
 	echo json_encode([
-		"error" => "Query: " . $deleteTaskQuery . "could not be run. Error has occured: " . $dbLink->error
+		"error" => "Query: " . $deleteTaskQuery . " could not be run. Error has occured: " . $dbLink->error
 	]);
 }
 
