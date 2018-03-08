@@ -26,19 +26,13 @@ $insertNewTaskQuery = "INSERT INTO tasks (task_details) VALUES ('$taskDetailsTex
 
 if (!empty($taskDetailsText) || $taskDetailsText !== null) {
 	$dbLink->query($insertNewTaskQuery);
-} else {
-	echo json_encode([
-		"error" => "Task cannot be blank, please try again."
-	]);
-}
 
-if ($dbLink->query($insertNewTaskQuery) === TRUE) {
 	echo json_encode([
 		"success" => "New record created successfully."
 	]);
 } else {
 	echo json_encode([
-		"error" => "Query: " . $insertNewTaskQuery . "could not be run. Error has occured: " . $dbLink->error
+		"error" => "Task cannot be blank, please try again."
 	]);
 }
 
