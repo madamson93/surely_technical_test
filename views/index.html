@@ -10,9 +10,9 @@
     <h1>Todo List App</h1>
 
     <div>
-        <form class="inline-form" ng-submit="submitTaskForm()">
+        <form class="inline-form">
             <input type="text" class="form-control mb-2 mr-sm-2" id="taskDetailsInput" placeholder="Enter task here" ng-model="taskdetails">
-            <button class="btn btn-success mb-2">Submit</button>
+            <button class="btn btn-success mb-2" type="submit" ng-click="submitTaskForm()">Submit</button>
         </form>
     </div>
 
