@@ -16,18 +16,14 @@ include_once('../app/DatabaseConnection.php');
 $dbConnection = new DatabaseConnection();
 $dbLink = $dbConnection->connectToDatabase();
 
-//use UPDATE query to update an existing task in the database
-$taskDetailsText = $_REQUEST['task_details'];
-$taskToEditID = $_REQUEST['task_id'];
-$updateTaskQuery = "UPDATE tasks SET task_details ='$taskDetailsText' WHERE id=$taskToEditID";
+//retrieve value from request body in JSON format
+$inputJSON = file_get_contents('php://input');
+$input = json_decode($inputJSON, TRUE);
+$taskToUpdateID = $input['task_id'];
+$taskDetailsText = $input['task_details'];
 
-if (!empty($taskDetailsText) || $taskDetailsText !== null) {
-	$dbLink->query($updateTaskQuery);
-} else {
-	echo json_encode([
-		"error" => "Task cannot be blank, please try again."
-	]);
-}
+//use UPDATE query to update an existing task in the database
+$updateTaskQuery = "UPDATE tasks SET task_details ='$taskDetailsText' WHERE id=$taskToUpdateID";
 
 if ($dbLink->query($updateTaskQuery) === TRUE) {
 	echo json_encode([
