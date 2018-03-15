@@ -1,12 +1,6 @@
-<!doctype html>
-<html>
-<head>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-    <script src="../src/todo.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
-</head>
+{% extends 'base.html.twig' %}
 
-<body class="container" ng-app="todoApp" ng-controller="TodoListController">
+{% block body %}
     <h1>Todo List App</h1>
 
     <div>
@@ -31,5 +25,4 @@
         </div>
 
     </div>
-</body>
-</html>
+{% endblock %}
