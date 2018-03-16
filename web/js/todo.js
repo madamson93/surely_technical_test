@@ -25,8 +25,8 @@ app.controller('TodoListController', function($scope, $http, $window) {
                 task_details: $scope.taskdetails
             };
 
-            $http.put('/api/tasks/' + $scope.taskID, editData)
-                .then(function() {
+            $http.put("/api/tasks/" + $scope.taskID, editData)
+                .then(function(response) {
                     if(response.data.error) {
                         $window.alert(response.data.error);
                     }
@@ -38,7 +38,7 @@ app.controller('TodoListController', function($scope, $http, $window) {
                 task_details: $scope.taskdetails
             };
 
-            $http.post('api/tasks', postData)
+            $http.post("api/tasks", postData)
                 .then(function() {
                     $scope.taskdetails = "";
                 });
@@ -50,7 +50,7 @@ app.controller('TodoListController', function($scope, $http, $window) {
 
     //DELETE request to delete a task
     $scope.deleteTask = function(taskID){
-        $http.delete('/api/tasks/')
+        $http.delete("/api/tasks/" + taskID)
             .then(function (response) {
                 if(response.data.error) {
                     $window.alert(response.data.error);
