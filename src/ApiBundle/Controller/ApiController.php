@@ -61,6 +61,10 @@ class ApiController extends Controller
 			// actually executes the queries (i.e. the INSERT query)
 			$entityManager->flush();
 
+			$response = [
+				'message' => "New item saved with ID: " . $this->taskEntity->getId()
+			];
+
 		} catch (MethodNotAllowedException $methodNotAllowedException) {
 			$response = [
 				'error' => self::HTTP_METHOD_ERROR
@@ -117,6 +121,10 @@ class ApiController extends Controller
 				$response = [
 					'error' => 'The task could not be retrieved with the requested ID, please try again.'
 				];
+			} else {
+				$response = [
+					'task_details' => $task->getTaskDetails()
+				];
 			}
 		} catch (MethodNotAllowedException $methodNotAllowedException) {
 			$response = [
@@ -159,6 +167,11 @@ class ApiController extends Controller
 			} else {
 				$task->setTaskDetails($requestData->task_details);
 				$entityManager->flush();
+
+
+				$response = [
+					'success' => 'Task with ID: ' . $task->getId() . ' was updated.'
+				];
 			}
 		} catch (MethodNotAllowedException $methodNotAllowedException) {
 			$response = [
@@ -196,6 +209,11 @@ class ApiController extends Controller
 			} else {
 				$entityManager->remove($task);
 				$entityManager->flush();
+
+				$response = [
+					'success' => 'Task with ID: ' . $id . ' was deleted.'
+				];
+
 			}
 		} catch (MethodNotAllowedException $methodNotAllowedException) {
 			$response = [
