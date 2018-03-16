@@ -1,16 +1,15 @@
 var app = angular.module('todoApp', []);
 
-app.controller('TodoListController', function($scope, $http) {
+app.controller('TodoListController', function($scope, $http, $window) {
     $scope.taskdetails = '';
     $scope.taskID = undefined;
     $scope.tasks = [];
 
     //GET request to populate table of to-do list items
     $scope.initialiseData = function() {
-        $http.get("../api/read.php")
+        $http.get("/api/tasks")
             .then(function(response) {
                 $scope.tasks = response.data;
-
                 return $scope.tasks;
             });
     };
@@ -18,16 +17,20 @@ app.controller('TodoListController', function($scope, $http) {
     $scope.initialiseData();
 
     //POST request to create a new task in the backend
+    //PUT request to update an existing task in the backend
     $scope.submitTaskForm = function(){
         //if the task ID is not undefined it already exists
         if($scope.taskID != undefined) {
             var editData = {
-                task_id: $scope.taskID,
                 task_details: $scope.taskdetails
             };
 
-            $http.put('../api/update.php', editData)
+            $http.put('/api/tasks/' + $scope.taskID, editData)
                 .then(function() {
+                    if(response.data.error) {
+                        $window.alert(response.data.error);
+                    }
+
                     $scope.taskdetails = "";
                 });
         } else {
@@ -35,7 +38,7 @@ app.controller('TodoListController', function($scope, $http) {
                 task_details: $scope.taskdetails
             };
 
-            $http.post('../api/create.php', postData)
+            $http.post('api/tasks', postData)
                 .then(function() {
                     $scope.taskdetails = "";
                 });
@@ -47,12 +50,12 @@ app.controller('TodoListController', function($scope, $http) {
 
     //DELETE request to delete a task
     $scope.deleteTask = function(taskID){
-        var deleteData = {
-          task_id: taskID
-        };
+        $http.delete('/api/tasks/')
+            .then(function (response) {
+                if(response.data.error) {
+                    $window.alert(response.data.error);
+                }
 
-        $http.post('../api/delete.php', deleteData)
-            .then(function () {
                 $scope.initialiseData();
         });
 
@@ -65,12 +68,13 @@ app.controller('TodoListController', function($scope, $http) {
         $scope.taskID = taskID;
 
         //retrieve the task using the API
-        $http.get("../api/readbyid.php", {
-            params: {
-                task_id: taskID
-            }
-        }).then(function(response) {
-            $scope.taskdetails = response.data[0].task_details;
+        $http.get("/api/tasks/" + taskID)
+            .then(function(response) {
+                if(response.data.error) {
+                    $window.alert(response.data.error);
+                }
+
+                $scope.taskdetails = response.data.task_details;
         });
     };
 
