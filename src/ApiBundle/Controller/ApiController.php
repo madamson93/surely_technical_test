@@ -26,6 +26,7 @@ class ApiController extends Controller
 
 	private $taskEntity;
 	const HTTP_METHOD_ERROR = 'The HTTP Method used is not allowed for this route. Please try again';
+	const REQUEST_EMPTY_ERROR = 'The request body must contain the correct data. Please try again';
 
 	/**
 	 * ApiController constructor.
@@ -70,10 +71,6 @@ class ApiController extends Controller
 			];
 		}
 
-		$response = [
-			'message' => "New item saved with ID: " . $this->taskEntity->getId()
-		];
-
 		return new JsonResponse($response);
 
 	}
@@ -101,22 +98,26 @@ class ApiController extends Controller
 		return new JsonResponse($tasksData);
 	}
 
-	public function getTaskByIdAction(): JsonResponse
+	/**
+	 * Route to get an existing task
+	 *
+	 * @Route("/api/tasks/{id}")
+	 * @Method("GET")
+	 *
+	 * @param Request $request
+	 * @return JsonResponse
+	 */
+	public function getTaskByIdAction(int $id): JsonResponse
 	{
 		try {
-			$requestData = json_decode($request->getContent());
-
 			$entityManager = $this->getDoctrine()->getManager();
 			$task = $entityManager->getRepository(Task::class)->find($id);
 
-			if (!$task) {
+			if(empty($task)) {
 				$response = [
-					'error' => 'Task could not be found to edit, please try again.'
+					'error' => 'The task could not be retrieved with the requested ID, please try again.'
 				];
 			}
-
-			$task->setTaskDetails($requestData->task_details);
-			$entityManager->flush();
 		} catch (MethodNotAllowedException $methodNotAllowedException) {
 			$response = [
 				'error' => self::HTTP_METHOD_ERROR
@@ -139,7 +140,7 @@ class ApiController extends Controller
 	 * @param Request $request
 	 * @return JsonResponse
 	 */
-	public function editTaskAction(Request $request, int $id)
+	public function editTaskAction(Request $request, int $id): JsonResponse
 	{
 		try {
 			$requestData = json_decode($request->getContent());
@@ -147,14 +148,55 @@ class ApiController extends Controller
 			$entityManager = $this->getDoctrine()->getManager();
 			$task = $entityManager->getRepository(Task::class)->find($id);
 
-			if (!$task) {
+			if (empty($task)) {
 				$response = [
 					'error' => 'Task could not be found to edit, please try again.'
 				];
+			} elseif(empty($requestData->task_details)) {
+				$response = [
+					'error' => self::REQUEST_EMPTY_ERROR
+				];
+			} else {
+				$task->setTaskDetails($requestData->task_details);
+				$entityManager->flush();
 			}
+		} catch (MethodNotAllowedException $methodNotAllowedException) {
+			$response = [
+				'error' => self::HTTP_METHOD_ERROR
+			];
+		} catch (HttpException $httpException) {
+			$response = [
+				'error' => $httpException->getMessage()
+			];
+		}
 
-			$task->setTaskDetails($requestData->task_details);
-			$entityManager->flush();
+		return new JsonResponse($response);
+	}
+
+
+	/**
+	 * Route to delete an existing task
+	 *
+	 * @Route("/api/tasks/{id}")
+	 * @Method("DELETE")
+	 *
+	 * @param Request $request
+	 * @return JsonResponse
+	 */
+	public function deleteTaskAction(int $id): JsonResponse
+	{
+		try {
+			$entityManager = $this->getDoctrine()->getManager();
+			$task = $entityManager->getRepository(Task::class)->find($id);
+
+			if (empty($task)) {
+				$response = [
+					'error' => 'Task could not be deleted, please try again.'
+				];
+			} else {
+				$entityManager->remove($task);
+				$entityManager->flush();
+			}
 		} catch (MethodNotAllowedException $methodNotAllowedException) {
 			$response = [
 				'error' => self::HTTP_METHOD_ERROR
